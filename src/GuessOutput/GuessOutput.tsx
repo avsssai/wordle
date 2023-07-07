@@ -20,11 +20,11 @@ export function GuessRow({ guess, answer }: { guess: string; answer: string }) {
 	const results = checkGuess(guess, answer);
 
 	return (
-		<div className='flex gap-2'>
+		<div className='flex gap-[5px]'>
 			{range(5).map((num) => (
 				<span
 					className={cn(
-						"h-[62px] w-[62px] border border-gray-400 text-white flex items-center justify-center font-bold text-3xl capitalize",
+						"h-[52px] w-[52px] border border-gray-400 text-white flex items-center justify-center font-bold text-3xl capitalize",
 						results && results[num].status === "correct"
 							? "bg-correct"
 							: results && results[num].status === "misplaced"
