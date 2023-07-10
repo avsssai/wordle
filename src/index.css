@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--color-misplaced: #b59f3b;
+	--color-correct: #538d4e;
+	--color-incorrect: #3a3a3c;
+	--color-muted: #818384;
+}

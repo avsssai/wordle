@@ -4,9 +4,10 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				present: "#b59f3b",
-				correct: "#538d4e",
-				absent: "#3a3a3c",
+				present: "var(--color-misplaced)",
+				correct: "var(--color-correct)",
+				absent: "var(--color-incorrect)",
+				muted: "var(--color-muted)",
 			},
 		},
 	},

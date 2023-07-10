@@ -1,3 +1,4 @@
+import React from "react";
 import "./App.css";
 import Game from "./Game/Game";
 import Header from "./Header/Header";
