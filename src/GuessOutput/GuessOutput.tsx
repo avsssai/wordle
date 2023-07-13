@@ -15,7 +15,7 @@ export default function CheckGuessOutput({
 }) {
 	console.log("rerender");
 	return (
-		<div className='flex flex-col'>
+		<div className='flex flex-col gap-[5px]'>
 			{range(6).map((num) =>
 				gameState && gameState[num] ? (
 					<CompletedRow word={gameState[num]} key={num} />
@@ -31,7 +31,7 @@ export default function CheckGuessOutput({
 
 function EmptyRow() {
 	return (
-		<div className='flex gap-1'>
+		<div className='flex gap-[5px]'>
 			{range(5).map((num) => (
 				<Cell key={num} />
 			))}
@@ -41,7 +41,7 @@ function EmptyRow() {
 
 function OnGoingRow({ word }: { word: string }) {
 	return (
-		<div className='flex gap-1'>
+		<div className='flex gap-[5px]'>
 			{range(5).map((num) => (
 				<Cell key={num} letter={word[num] ? word[num] : ""} />
 			))}
@@ -62,7 +62,7 @@ function CompletedRow({ word }: { word: string }) {
 	// 		: "bg-inherit";
 
 	return (
-		<div className='flex gap-1'>
+		<div className='flex gap-[5px]'>
 			{range(5).map((num) => (
 				<Cell
 					key={num}

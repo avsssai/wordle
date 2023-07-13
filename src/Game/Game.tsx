@@ -6,6 +6,7 @@ import Toast from "../Toast/Toast";
 import { checkGuess } from "../utils/checkAnswer";
 import Keyboard from "../Keyboard/Keyboard";
 import { checkLegitWord, letterInAphabet } from "../utils/words";
+import { useLocaStorage } from "../hooks/useLocalStorage";
 
 interface IObject {
 	[key: number]: string;
@@ -22,15 +23,22 @@ const completedGameLauds: IObject = {
 
 export default function Game() {
 	const [gameState, setGameState] = React.useState<string[]>([""]);
-	const [gameStatus, setGameStatus] = React.useState<GameStatus>("running");
+	const [gameStatus, setGameStatus] = useLocaStorage<GameStatus>(
+		"running",
+		"game-status"
+	);
 	const { answer } = useContext(AnswerContext);
 	const [showToast, setShowToast] = React.useState<boolean>(false);
 	const [toastMessage, setToastMessage] = React.useState<string>(answer);
 	const [currentRow, setCurrentRow] = React.useState<number>(0);
 	const [currentWord, setCurrentWord] = React.useState<string>("");
+	const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
 	console.log(currentWord, gameState);
 	React.useEffect(() => {
 		const keyPressEvent = (e: KeyboardEvent) => {
+			if (gameStatus !== "running") {
+				return;
+			}
 			if (e.key === "Enter") {
 				if (!checkLegitWord(currentWord)) {
 					return;
@@ -45,6 +53,14 @@ export default function Game() {
 				gameState[currentRow] = currentWord;
 				setCurrentWord("");
 				setCurrentRow((state) => state + 1);
+				console.log(currentWord, answer);
+				if (currentWord === answer) {
+					setTimeout(() => {
+						setGameStatus("passed");
+						setShowToast(true);
+						setToastMessage(completedGameLauds[currentRow]);
+					}, 3500);
+				}
 			} else if (e.key === "Backspace" || e.key === "Delete") {
 				if (currentWord.length > 0) {
 					setCurrentWord((state) => state.slice(0, state.length - 1));
@@ -54,7 +70,7 @@ export default function Game() {
 					return;
 				} else {
 					if (letterInAphabet(e.key)) {
-						setCurrentWord((state) => state + e.key);
+						setCurrentWord((state) => state + e.key.toUpperCase());
 					}
 				}
 			}
@@ -70,6 +86,7 @@ export default function Game() {
 		setCurrentRow,
 		answer,
 		gameStatus,
+		setGameStatus,
 	]);
 
 	return (
@@ -83,7 +100,6 @@ export default function Game() {
 					currentRow={currentRow}
 					currentWord={currentWord}
 				/>
-				T r
 			</div>
 			<Keyboard />
 			{/* <Input handleAddGuess={handleAddGuess} gameStatus={gameStatus} /> */}

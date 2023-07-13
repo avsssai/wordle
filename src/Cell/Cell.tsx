@@ -1,15 +1,16 @@
 import { cn } from "../utils/cn";
-import { Variants, motion } from "framer-motion";
+import { Variants, motion, useAnimation } from "framer-motion";
 
 type IStatus = "correct" | "incorrect" | "misplaced";
 
 const variants: Variants = {
 	initial: {
 		rotateX: 0,
+		backgroundColor: "rgba(0,0,0,0)",
 	},
 	final: ({ i, status }: { i: number; status: IStatus }) => ({
 		rotateX: [0, 90, 0],
-		background:
+		backgroundColor:
 			status === "correct"
 				? "var(--color-correct)"
 				: status === "misplaced"
@@ -44,6 +45,7 @@ export default function Cell({
 			animate={completed ? "final" : false}
 			custom={{ i, status }}
 			onAnimationComplete={() => console.log("completed")}
+			style={{ backgroundColor: "rgba(0,0,0,0)" }}
 			className={cn(
 				"h-[52px] w-[52px] border border-gray-400 text-white flex items-center justify-center font-bold text-3xl capitalize",
 				className
