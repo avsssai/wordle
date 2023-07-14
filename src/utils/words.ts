@@ -71,7 +71,10 @@ export const getGameDay = () => {
 };
 
 export const isValidWord = (word: string) => {
-	return POSSIBLE_WORDS.includes(word);
+	const wordLowerCase = word.toLowerCase();
+	return (
+		POSSIBLE_WORDS.includes(wordLowerCase) || WORDS.includes(wordLowerCase)
+	);
 };
 
 export const { solutionIndex, wordOfTheDay } = getSolution(getGameDay());

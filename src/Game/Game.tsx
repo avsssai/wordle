@@ -92,6 +92,7 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 				return;
 			}
 			if (e.key === "Enter") {
+				console.log(isValidWord(currentWord));
 				if (!checkLegitWord(currentWord)) {
 					return;
 				}
@@ -99,7 +100,6 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 				if (!isValidWord(currentWord)) {
 					return;
 				}
-
 				if (gameState.length >= 5 && gameStatus === "running") {
 					setTimeout(() => {
 						setGameStatus("failed");
