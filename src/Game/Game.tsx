@@ -5,8 +5,10 @@ import { AnswerContext } from "../hooks/useAnswer";
 import Toast from "../Toast/Toast";
 import { checkGuess } from "../utils/checkAnswer";
 import Keyboard from "../Keyboard/Keyboard";
-import { checkLegitWord, letterInAphabet } from "../utils/words";
-import { useLocaStorage } from "../hooks/useLocalStorage";
+import { checkLegitWord, isValidWord, letterInAphabet } from "../utils/words";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
+import { isToday } from "date-fns";
 
 interface IObject {
 	[key: number]: string;
@@ -21,19 +23,69 @@ const completedGameLauds: IObject = {
 	5: "Good!",
 };
 
-export default function Game() {
-	const [gameState, setGameState] = React.useState<string[]>([""]);
-	const [gameStatus, setGameStatus] = useLocaStorage<GameStatus>(
-		"running",
-		"game-status"
+const initialGameState: string[] = [""];
+const initialGameStatus: GameStatus = "running";
+const initialCurrentRow = 0;
+const initialCurrentWord = "";
+const initialShowToast = false;
+
+interface GameProps {
+	timeStamp: number;
+	setTimeStamp: (value: number) => void;
+}
+
+export default function Game({ timeStamp, setTimeStamp }: GameProps) {
+	console.log(unixTimeNow());
+	const [gameState, setGameState] = useLocalStorage<string[]>(
+		"game-state",
+		initialGameState
+	);
+	const [gameStatus, setGameStatus] = useLocalStorage<GameStatus>(
+		"game-status",
+		initialGameStatus
 	);
 	const { answer } = useContext(AnswerContext);
-	const [showToast, setShowToast] = React.useState<boolean>(false);
+	const [showToast, setShowToast] = useLocalStorage<boolean>(
+		"show-toast",
+		initialShowToast
+	);
 	const [toastMessage, setToastMessage] = React.useState<string>(answer);
-	const [currentRow, setCurrentRow] = React.useState<number>(0);
-	const [currentWord, setCurrentWord] = React.useState<string>("");
+	const [currentRow, setCurrentRow] = useLocalStorage<number>(
+		"current-row",
+		initialCurrentRow
+	);
+	const [currentWord, setCurrentWord] = useLocalStorage<string>(
+		"current-word",
+		initialCurrentWord
+	);
 	const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
-	console.log(currentWord, gameState);
+	// console.log(wordOfTheDay, "WORD OF THE DAY");
+
+	React.useEffect(() => {
+		const timeStampInWindow = window.localStorage.getItem("timestamp");
+		if (!timeStampInWindow) {
+			setTimeStamp(unixTimeNow());
+		} else {
+			// 1. if the time stamp is of yesterday, reset the local state
+			// const isPreviousDayTimestamp = isPreviousDay(timeStamp);
+			if (!isTodayTimestamp(timeStamp)) {
+				setGameState(initialGameState);
+				setGameStatus(initialGameStatus);
+				setCurrentRow(initialCurrentRow);
+				setCurrentWord(initialCurrentWord);
+				setShowToast(initialShowToast);
+			}
+		}
+	}, [
+		setTimeStamp,
+		setCurrentRow,
+		setCurrentWord,
+		setGameState,
+		setGameStatus,
+		setShowToast,
+		timeStamp,
+	]);
+
 	React.useEffect(() => {
 		const keyPressEvent = (e: KeyboardEvent) => {
 			if (gameStatus !== "running") {
@@ -43,6 +95,11 @@ export default function Game() {
 				if (!checkLegitWord(currentWord)) {
 					return;
 				}
+
+				if (!isValidWord(currentWord)) {
+					return;
+				}
+
 				if (gameState.length >= 5 && gameStatus === "running") {
 					setTimeout(() => {
 						setGameStatus("failed");
@@ -50,7 +107,10 @@ export default function Game() {
 						setShowToast(true);
 					}, 3500);
 				}
-				gameState[currentRow] = currentWord;
+				setTimeStamp(unixTimeNow());
+				const newState = [...gameState];
+				newState[currentRow] = currentWord; // setting mutable state
+				setGameState(newState);
 				setCurrentWord("");
 				setCurrentRow((state) => state + 1);
 				console.log(currentWord, answer);
@@ -87,6 +147,8 @@ export default function Game() {
 		answer,
 		gameStatus,
 		setGameStatus,
+		setShowToast,
+		setTimeStamp,
 	]);
 
 	return (

@@ -52,6 +52,8 @@ function OnGoingRow({ word }: { word: string }) {
 function CompletedRow({ word }: { word: string }) {
 	const { answer } = React.useContext(AnswerContext);
 	const results = checkGuess(word, answer);
+	console.log(answer, results);
+
 	// const customClass = (num: number) =>
 	// 	results && results[num].status === "correct"
 	// 		? "bg-correct"

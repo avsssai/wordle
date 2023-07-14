@@ -1,6 +1,8 @@
 import React from "react";
+import { wordOfTheDay } from "../utils/words";
+// import { wordOfTheDay } from "../utils/words";
 
-const ANSWER = "SHIVA";
+const ANSWER = wordOfTheDay.toUpperCase();
 interface AnswerContext {
 	answer: string;
 }
