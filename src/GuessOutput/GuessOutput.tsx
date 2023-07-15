@@ -3,15 +3,20 @@ import Cell from "../Cell/Cell";
 import { range } from "../utils/range";
 import { checkGuess } from "../utils/checkAnswer";
 import { AnswerContext } from "../hooks/useAnswer";
+import { motion, useAnimationControls } from "framer-motion";
 
 export default function CheckGuessOutput({
 	gameState,
 	currentRow,
 	currentWord,
+	incorrectAnimation,
+	setIncorrectAnimation,
 }: {
 	gameState: string[];
 	currentRow: number;
 	currentWord: string;
+	incorrectAnimation: boolean;
+	setIncorrectAnimation: (val: boolean) => void;
 }) {
 	console.log("rerender");
 	return (
@@ -20,7 +25,12 @@ export default function CheckGuessOutput({
 				gameState && gameState[num] ? (
 					<CompletedRow word={gameState[num]} key={num} />
 				) : num === currentRow ? (
-					<OnGoingRow word={currentWord} key={num} />
+					<OnGoingRow
+						word={currentWord}
+						key={num}
+						incorrectAnimation={incorrectAnimation}
+						setIncorrectAnimation={setIncorrectAnimation}
+					/>
 				) : (
 					<EmptyRow key={num} />
 				)
@@ -39,13 +49,36 @@ function EmptyRow() {
 	);
 }
 
-function OnGoingRow({ word }: { word: string }) {
+function OnGoingRow({
+	word,
+	incorrectAnimation,
+	setIncorrectAnimation,
+}: {
+	word: string;
+	incorrectAnimation: boolean;
+	setIncorrectAnimation: (val: boolean) => void;
+}) {
+	const controls = useAnimationControls();
+	React.useEffect(() => {
+		if (incorrectAnimation) {
+			controls.start({
+				x: [-10, 10, 0],
+				transition: {
+					duration: 0.2,
+					type: "tween",
+				},
+			});
+		}
+	}, [incorrectAnimation, controls]);
 	return (
-		<div className='flex gap-[5px]'>
+		<motion.div
+			className='flex gap-[5px]'
+			animate={controls}
+			onAnimationComplete={() => setIncorrectAnimation(false)}>
 			{range(5).map((num) => (
 				<Cell key={num} letter={word[num] ? word[num] : ""} />
 			))}
-		</div>
+		</motion.div>
 	);
 }
 

@@ -3,12 +3,11 @@ import GuessOutput from "../GuessOutput/GuessOutput";
 import { GameStatus } from "../types/state";
 import { AnswerContext } from "../hooks/useAnswer";
 import Toast from "../Toast/Toast";
-import { checkGuess } from "../utils/checkAnswer";
 import Keyboard from "../Keyboard/Keyboard";
 import { checkLegitWord, isValidWord, letterInAphabet } from "../utils/words";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
-import { isToday } from "date-fns";
+import DialogComponent from "../Dialog";
 
 interface IObject {
 	[key: number]: string;
@@ -58,7 +57,10 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 		"current-word",
 		initialCurrentWord
 	);
-	const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
+
+	const [incorrectAnimation, setIncorrectAnimation] =
+		React.useState<boolean>(false);
+	// const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
 	// console.log(wordOfTheDay, "WORD OF THE DAY");
 
 	React.useEffect(() => {
@@ -91,13 +93,14 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 			if (gameStatus !== "running") {
 				return;
 			}
+
 			if (e.key === "Enter") {
-				console.log(isValidWord(currentWord));
 				if (!checkLegitWord(currentWord)) {
 					return;
 				}
 
 				if (!isValidWord(currentWord)) {
+					setIncorrectAnimation(true);
 					return;
 				}
 				if (gameState.length >= 5 && gameStatus === "running") {
@@ -161,7 +164,10 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 					gameState={gameState}
 					currentRow={currentRow}
 					currentWord={currentWord}
+					incorrectAnimation={incorrectAnimation}
+					setIncorrectAnimation={setIncorrectAnimation}
 				/>
+				D
 			</div>
 			<Keyboard />
 			{/* <Input handleAddGuess={handleAddGuess} gameStatus={gameStatus} /> */}
