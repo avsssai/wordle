@@ -1,12 +1,8 @@
-import React from "react";
 import Countdown from "react-countdown";
 import MyDialog from "../Dialog/Dialog";
-import { fromUnixTime, getUnixTime, nextDay, startOfTomorrow } from "date-fns";
+import { getUnixTime, startOfTomorrow } from "date-fns";
 
-function getNextDayStart(time?: number) {
-	const now = Date.now();
-	const unix = now / 1000;
-	const date = fromUnixTime(unix);
+function getNextDayStart() {
 	const tmmrw = startOfTomorrow();
 	const tmrwUnix = getUnixTime(tmmrw) * 1000;
 	return tmrwUnix;

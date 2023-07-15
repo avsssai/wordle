@@ -4,8 +4,7 @@ import Game from "./Game/Game";
 import Header from "./Header/Header";
 import { AnswerProvider } from "./hooks/useAnswer";
 import { useLocalStorage } from "use-hooks";
-import { isTodayTimestamp, unixTimeNow } from "./utils/dateUtils";
-import { isToday } from "date-fns";
+import { unixTimeNow } from "./utils/dateUtils";
 import TutorialDIalog from "./TutorialDialog/TutorialDialog";
 import CompleteDialog from "./CompleteDialog/CompleteDialog";
 

@@ -7,7 +7,6 @@ import Keyboard from "../Keyboard/Keyboard";
 import { checkLegitWord, isValidWord, letterInAphabet } from "../utils/words";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
-import DialogComponent from "../Dialog";
 
 interface IObject {
 	[key: number]: string;

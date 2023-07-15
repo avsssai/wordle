@@ -1,5 +1,5 @@
 import { cn } from "../utils/cn";
-import { Variants, motion, useAnimation } from "framer-motion";
+import { Variants, motion } from "framer-motion";
 
 type IStatus = "correct" | "incorrect" | "misplaced";
 
