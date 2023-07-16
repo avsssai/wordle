@@ -12,7 +12,8 @@ export const AnswerContext = React.createContext<AnswerContext>({
 });
 
 export const AnswerProvider = ({ children }: { children: React.ReactNode }) => {
-	const [answer, setAnswer] = React.useState<string>(ANSWER);
+	/* eslint-disable */
+	const [answer, _setAnswer] = React.useState<string>(ANSWER);
 	return (
 		<AnswerContext.Provider value={{ answer }}>
 			{children}

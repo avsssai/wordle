@@ -20,8 +20,7 @@ export function isTodayTimestamp(unixTimeStamp: number) {
 
 	const date = fromUnixTime(unixTimeStamp);
 	const formattedDate = formatTimezone(date);
-	console.log(formattedDate, date, "///");
-	console.log(isToday(formatTimezone(date)));
+
 	return isToday(formattedDate);
 }
 

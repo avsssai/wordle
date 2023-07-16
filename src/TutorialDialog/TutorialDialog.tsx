@@ -1,5 +1,4 @@
 import MyDialog from "../Dialog/Dialog";
-import { cn } from "../utils/cn";
 import { motion, Variants } from "framer-motion";
 
 export default function TutorialDIalog({

@@ -1,11 +1,4 @@
-import {
-	addDays,
-	differenceInDays,
-	formatISO,
-	parseISO,
-	startOfDay,
-	startOfToday,
-} from "date-fns";
+import { addDays, startOfToday } from "date-fns";
 
 import { POSSIBLE_WORDS, WORDS } from "../lib/words";
 
