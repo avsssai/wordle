@@ -7,7 +7,7 @@ export default function Header({
 	setCompleteDialogOpen: (val: boolean) => void;
 }) {
 	return (
-		<div className='flex w-full p-4 text-white border-b-2 border-b-white absolute top-0 left-0'>
+		<div className='flex w-full p-4 text-white border-b-2 border-b-white absolute top-0 left-0 z-40'>
 			<div className='capitalize font-bold text-3xl mr-auto md:m-auto'>
 				Wordle
 			</div>
@@ -20,6 +20,7 @@ export default function Header({
 				<BarChart2
 					strokeWidth={3}
 					onClick={() => setCompleteDialogOpen(true)}
+					className='cursor-pointer'
 				/>
 				<Settings strokeWidth={3} />
 			</div>

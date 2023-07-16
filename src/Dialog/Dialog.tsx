@@ -1,5 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
+import { XCircle } from "lucide-react";
 
 const dialogVariants: Variants = {
 	close: {
@@ -38,7 +39,13 @@ export default function MyDialog({
 					initial='close'
 					animate='open'
 					className='fixed inset-0 flex items-center justify-center p-4'>
-					<Dialog.Panel className='w-full max-w-sm rounded bg-stone-800 text-white py-6 px-4 '>
+					<Dialog.Panel className='w-full relative max-w-sm rounded bg-stone-800 text-white py-6 px-4 '>
+						<div className='absolute top-2 right-2 cursor-pointer'>
+							<XCircle
+								color='white'
+								onClick={() => setOpen(false)}
+							/>
+						</div>
 						<Dialog.Title className='capitalize font-bold text-2xl'>
 							{title}
 						</Dialog.Title>

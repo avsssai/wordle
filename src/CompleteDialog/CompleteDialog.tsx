@@ -4,13 +4,10 @@ import { getUnixTime, startOfTomorrow } from "date-fns";
 import { Stats } from "../types/state";
 import {
 	XYPlot,
-	LineSeries,
 	VerticalGridLines,
 	HorizontalGridLines,
 	XAxis,
 	YAxis,
-	HorizontalRectSeries,
-	VerticalBarSeries,
 	HorizontalBarSeries,
 } from "react-vis";
 
