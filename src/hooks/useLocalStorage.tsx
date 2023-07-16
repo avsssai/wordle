@@ -1,20 +1,20 @@
 import React from "react";
-
-// export function useLocalStorage<T>(
-// 	key: string,
-// 	defaultValue: T
-// ): [T, React.Dispatch<React.SetStateAction<T>>] {
-// 	const [value, setValue] = React.useState<T>(() => {
-// 		const valueInLocalStorage = window.localStorage.getItem("key");
-// 		return !valueInLocalStorage
-// 			? defaultValue
-// 			: JSON.parse(valueInLocalStorage);
-// 	});
-// 	React.useEffect(() => {
-// 		window.localStorage.setItem(key, JSON.stringify(value));
-// 	}, [key, value]);
-// 	return [value, setValue];
-// }
+export function useStickyState<T>(
+	key: string,
+	defaultValue: T
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+	const [value, setValue] = React.useState<T>(() => {
+		const valueInLocalStorage = window.localStorage.getItem(key);
+		console.log(valueInLocalStorage);
+		return !valueInLocalStorage
+			? defaultValue
+			: JSON.parse(valueInLocalStorage);
+	});
+	React.useEffect(() => {
+		window.localStorage.setItem(key, JSON.stringify(value));
+	}, [key, value]);
+	return [value, setValue];
+}
 
 import {
 	Dispatch,

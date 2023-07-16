@@ -18,7 +18,6 @@ export default function CheckGuessOutput({
 	incorrectAnimation: boolean;
 	setIncorrectAnimation: (val: boolean) => void;
 }) {
-	console.log("rerender");
 	return (
 		<div className='flex flex-col gap-[5px]'>
 			{range(6).map((num) =>
@@ -85,7 +84,6 @@ function OnGoingRow({
 function CompletedRow({ word }: { word: string }) {
 	const { answer } = React.useContext(AnswerContext);
 	const results = checkGuess(word, answer);
-	console.log(answer, results);
 
 	// const customClass = (num: number) =>
 	// 	results && results[num].status === "correct"

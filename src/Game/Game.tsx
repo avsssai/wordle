@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import GuessOutput from "../GuessOutput/GuessOutput";
-import { GameStatus } from "../types/state";
+import { GameStatus, Stats } from "../types/state";
 import { AnswerContext } from "../hooks/useAnswer";
 import Toast from "../Toast/Toast";
 import Keyboard from "../Keyboard/Keyboard";
@@ -30,10 +30,16 @@ const initialShowToast = false;
 interface GameProps {
 	timeStamp: number;
 	setTimeStamp: (value: number) => void;
+	setStats: (value: Stats) => void;
+	stats: Stats;
 }
 
-export default function Game({ timeStamp, setTimeStamp }: GameProps) {
-	console.log(unixTimeNow());
+export default function Game({
+	timeStamp,
+	setTimeStamp,
+	setStats,
+	stats,
+}: GameProps) {
 	const [gameState, setGameState] = useLocalStorage<string[]>(
 		"game-state",
 		initialGameState
@@ -88,6 +94,18 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 	]);
 
 	React.useEffect(() => {
+		function percentageCalc(stats: Stats) {
+			const totalWins = Object.values(stats.guesses).reduce(
+				(acc, val) => {
+					acc += val;
+					return acc;
+				},
+				0
+			);
+			return Math.floor(
+				(totalWins / (totalWins + stats.failCount)) * 100
+			);
+		}
 		const keyPressEvent = (e: KeyboardEvent) => {
 			if (gameStatus !== "running") {
 				return;
@@ -105,6 +123,17 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 				if (gameState.length >= 5 && gameStatus === "running") {
 					setTimeout(() => {
 						setGameStatus("failed");
+
+						// update the stats
+						const newStats = { ...stats };
+						newStats.currentStreak = 0;
+						newStats.gamesPlayed++;
+						newStats.failCount++;
+						newStats.hasPlayed = true;
+						newStats.isOnStreak = false;
+						newStats.winPercentage = percentageCalc(newStats);
+						setStats(newStats);
+
 						setToastMessage(answer);
 						setShowToast(true);
 					}, 3500);
@@ -115,10 +144,21 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 				setGameState(newState);
 				setCurrentWord("");
 				setCurrentRow((state) => state + 1);
-				console.log(currentWord, answer);
 				if (currentWord === answer) {
 					setTimeout(() => {
 						setGameStatus("passed");
+
+						const newStats = { ...stats };
+						newStats.currentStreak++;
+						newStats.gamesPlayed++;
+						newStats.guesses[currentRow + 1]++;
+						newStats.hasPlayed = true;
+						newStats.isOnStreak = true;
+						newStats.gamesWon++;
+						newStats.maxStreak++;
+						newStats.winPercentage = percentageCalc(newStats);
+						setStats(newStats);
+
 						setShowToast(true);
 						setToastMessage(completedGameLauds[currentRow]);
 					}, 3500);
@@ -151,6 +191,8 @@ export default function Game({ timeStamp, setTimeStamp }: GameProps) {
 		setGameStatus,
 		setShowToast,
 		setTimeStamp,
+		setStats,
+		stats,
 	]);
 
 	return (
