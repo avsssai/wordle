@@ -1,9 +1,9 @@
-import { IObject } from "../types/genericTypes";
+import { IObjectStringKeyValue } from "../types/genericTypes";
 import { Results, checkGuess } from "./checkAnswer";
 
 export function calculateKeyResults(gameState: string[], answer: string) {
 	const res: (Results[] | undefined)[] = [];
-	const letterObj: IObject = {};
+	const letterObj: IObjectStringKeyValue = {};
 	for (const word of gameState) {
 		if (checkGuess(word, answer)) {
 			res.push(checkGuess(word, answer));
@@ -17,13 +17,16 @@ export function calculateKeyResults(gameState: string[], answer: string) {
 					letterObj[letterStatus.letter] = letterStatus.status;
 				} else {
 					const { letter, status } = letterStatus;
-					if (letterObj[letter] === "completed") {
+					if (letterObj[letter] === "correct") {
 						continue;
 					} else if (
 						letterObj[letter] === "misplaced" &&
 						status === "correct"
 					) {
 						letterObj[letter] = "correct";
+					} else if (letterObj[letter] === "misplaced") {
+						letterObj[letter] = "misplaced";
+						continue;
 					} else {
 						letterObj[letter] = status;
 					}
