@@ -17,7 +17,6 @@ export function shareResults(
 	for (const row of gameState) {
 		const res = checkGuess(row, answer);
 		let builder = ``;
-		console.log(builder, "builder");
 		if (res) {
 			for (const letter of res) {
 				if (letter.status === "correct") {

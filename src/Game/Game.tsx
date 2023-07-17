@@ -9,7 +9,6 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
 import { calculateKeyResults } from "../utils/letterResults";
 import { IObjectStringKeyValue } from "../types/genericTypes";
-import { shareResults } from "../utils/shareResults";
 
 interface IObject {
 	[key: number]: string;
@@ -36,6 +35,12 @@ interface GameProps {
 	setStats: (value: Stats) => void;
 	stats: Stats;
 	setCompleteDialogOpen: (val: boolean) => void;
+	gameState: string[];
+	gameStatus: GameStatus;
+	setGameState: (val: string[]) => void;
+	setGameStatus: (val: GameStatus) => void;
+	currentRow: number;
+	setCurrentRow: (val: number) => void;
 }
 
 export default function Game({
@@ -44,25 +49,20 @@ export default function Game({
 	setStats,
 	stats,
 	setCompleteDialogOpen,
+	gameState,
+	gameStatus,
+	setGameState,
+	setGameStatus,
+	currentRow,
+	setCurrentRow,
 }: GameProps) {
-	const [gameState, setGameState] = useLocalStorage<string[]>(
-		"game-state",
-		initialGameState
-	);
-	const [gameStatus, setGameStatus] = useLocalStorage<GameStatus>(
-		"game-status",
-		initialGameStatus
-	);
 	const { answer } = useContext(AnswerContext);
 	const [showToast, setShowToast] = useLocalStorage<boolean>(
 		"show-toast",
 		initialShowToast
 	);
 	const [toastMessage, setToastMessage] = React.useState<string>(answer);
-	const [currentRow, setCurrentRow] = useLocalStorage<number>(
-		"current-row",
-		initialCurrentRow
-	);
+
 	const [currentWord, setCurrentWord] = useLocalStorage<string>(
 		"current-word",
 		initialCurrentWord
@@ -75,7 +75,6 @@ export default function Game({
 		React.useState<boolean>(false);
 	// const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
 	// console.log(wordOfTheDay, "WORD OF THE DAY");
-	console.log(shareResults(gameState, currentRow, answer, gameStatus));
 	React.useEffect(() => {
 		const timeStampInWindow = window.localStorage.getItem("timestamp");
 		if (!timeStampInWindow) {
@@ -128,7 +127,7 @@ export default function Game({
 			newState[currentRow] = currentWord; // setting mutable state
 			setGameState(newState);
 			setCurrentWord("");
-			setCurrentRow((state) => state + 1);
+			setCurrentRow(currentRow + 1);
 			setTimeout(() => {
 				setKeyRes(calculateKeyResults(newState, answer));
 			}, 3500);
@@ -208,8 +207,6 @@ export default function Game({
 
 	const onKeyClick = React.useCallback(
 		(e: KeyboardEvent | React.MouseEvent) => {
-			console.log("something");
-
 			if (e instanceof KeyboardEvent) {
 				if (letterInAphabet(e.key)) {
 					setCurrentWord((state) => state + e.key.toUpperCase());

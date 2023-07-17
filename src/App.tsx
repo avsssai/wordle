@@ -2,15 +2,21 @@ import React from "react";
 import "./App.css";
 import Game from "./Game/Game";
 import Header from "./Header/Header";
-import { AnswerProvider } from "./hooks/useAnswer";
+import { AnswerContext, AnswerProvider } from "./hooks/useAnswer";
 import { useLocalStorage } from "use-hooks";
 import { unixTimeNow } from "./utils/dateUtils";
 import TutorialDIalog from "./TutorialDialog/TutorialDialog";
 import CompleteDialog from "./CompleteDialog/CompleteDialog";
-import { Stats } from "./types/state";
+import { GameStatus, Stats } from "./types/state";
 import { useStickyState } from "./hooks/useLocalStorage";
+import { shareResults } from "./utils/shareResults";
+
+const initialGameStatus: GameStatus = "running";
+const initialGameState: string[] = [""];
+const initialCurrentRow = 0;
 
 function App() {
+	const { answer } = React.useContext(AnswerContext);
 	const [timeStamp, setTimeStamp] = useLocalStorage(
 		"timestamp",
 		unixTimeNow()
@@ -19,6 +25,19 @@ function App() {
 		React.useState<boolean>(false);
 	const [completeDialogOpen, setCompleteDialogOpen] =
 		React.useState<boolean>(false);
+	const [gameState, setGameState] = useLocalStorage<string[]>(
+		"game-state",
+		initialGameState
+	);
+	const [gameStatus, setGameStatus] = useLocalStorage<GameStatus>(
+		"game-status",
+		initialGameStatus
+	);
+
+	const [currentRow, setCurrentRow] = useLocalStorage<number>(
+		"current-row",
+		initialCurrentRow
+	);
 
 	const initialStatState = {
 		averageGuesses: 0,
@@ -34,11 +53,18 @@ function App() {
 	};
 
 	const [stats, setStats] = useStickyState<Stats>("stats", initialStatState);
+
+	const calculateResults = React.useCallback(
+		() => shareResults(gameState, currentRow, answer, gameStatus),
+		[gameState, gameStatus, answer, currentRow]
+	);
+
 	React.useEffect(() => {
 		if (!stats.hasPlayed) {
 			setTutorialDialogOpen(true);
 		}
 	}, [stats.hasPlayed]);
+
 	return (
 		<AnswerProvider>
 			<TutorialDIalog
@@ -49,6 +75,7 @@ function App() {
 				open={completeDialogOpen}
 				setOpen={setCompleteDialogOpen}
 				stats={stats}
+				calculateResults={calculateResults}
 			/>
 			<div className='w-full bg-black h-screen max-h-screen relative'>
 				<Header
@@ -61,6 +88,12 @@ function App() {
 					setStats={setStats}
 					stats={stats}
 					setCompleteDialogOpen={setCompleteDialogOpen}
+					gameState={gameState}
+					setGameState={setGameState}
+					gameStatus={gameStatus}
+					setGameStatus={setGameStatus}
+					currentRow={currentRow}
+					setCurrentRow={setCurrentRow}
 				/>
 			</div>
 		</AnswerProvider>

@@ -10,7 +10,7 @@ import {
 	YAxis,
 	HorizontalBarSeries,
 } from "react-vis";
-
+import { Share } from "react-feather";
 function getNextDayStart() {
 	const tmmrw = startOfTomorrow();
 	const tmrwUnix = getUnixTime(tmmrw) * 1000;
@@ -21,10 +21,12 @@ export default function CompleteDialog({
 	open,
 	setOpen,
 	stats,
+	calculateResults,
 }: {
 	open: boolean;
 	setOpen: (val: boolean) => void;
 	stats: Stats;
+	calculateResults: () => string;
 }) {
 	const chartDistribution = (stats: Stats) => {
 		const res: { x: number; y: number }[] = [];
@@ -120,13 +122,25 @@ export default function CompleteDialog({
 								</XYPlot>
 							</div>
 						</div>
+						<div className='flex flex-col justify-center items-center text-3xl'>
+							<h1 className='text-[12px] font-bold'>
+								{" "}
+								Time till next game:
+							</h1>{" "}
+							<Countdown date={getNextDayStart()} />
+						</div>
+
+						<button
+							className='bg-[var(--color-correct)] px-2 py-2 flex justify-center items-center mt-4 gap-2 text-sm rounded-sm mx-auto outline-white outline-offset-2'
+							onClick={() => {
+								navigator.clipboard.writeText(
+									calculateResults()
+								);
+							}}>
+							Share <Share color='white' size={12} />
+						</button>
 					</>
 				)}
-			</div>
-
-			<div className='flex flex-col justify-center items-center text-3xl'>
-				<h1 className='text-[12px] font-bold'> Time till next game:</h1>{" "}
-				<Countdown date={getNextDayStart()} />
 			</div>
 		</MyDialog>
 	);
