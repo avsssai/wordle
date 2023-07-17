@@ -44,7 +44,6 @@ export default function Cell({
 			initial='initial'
 			animate={completed ? "final" : false}
 			custom={{ i, status }}
-			onAnimationComplete={() => console.log("completed")}
 			style={{ backgroundColor: "rgba(0,0,0,0)" }}
 			className={cn(
 				"h-[52px] w-[52px] border border-gray-400 text-white flex items-center justify-center font-bold text-3xl capitalize",

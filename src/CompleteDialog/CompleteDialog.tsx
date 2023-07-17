@@ -35,7 +35,6 @@ export default function CompleteDialog({
 		return res;
 	};
 	const data = chartDistribution(stats);
-	console.log(chartDistribution(stats));
 
 	return (
 		<MyDialog title='Stats' open={open} setOpen={setOpen}>

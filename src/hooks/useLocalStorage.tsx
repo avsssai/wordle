@@ -5,7 +5,6 @@ export function useStickyState<T>(
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
 	const [value, setValue] = React.useState<T>(() => {
 		const valueInLocalStorage = window.localStorage.getItem(key);
-		console.log(valueInLocalStorage);
 		return !valueInLocalStorage
 			? defaultValue
 			: JSON.parse(valueInLocalStorage);
@@ -61,6 +60,7 @@ export function useLocalStorage<T>(
 
 	// Return a wrapped version of useState's setter function that ...
 	// ... persists the new value to localStorage.
+	/* eslint-disable  @typescript-eslint/no-explicit-any */
 	const setValue: SetValue<T> = useEventCallback((value: any) => {
 		// Prevent build error "window is undefined" but keeps working
 		if (typeof window === "undefined") {

@@ -93,7 +93,6 @@ export default function Keyboard({
 	// useEffect(() => {
 	// 	setKeyRes(calculateKeyResults(gameState, answer));
 	// }, [answer, gameState.length, gameState]);
-	console.log(keyRes);
 	return (
 		//wrapper
 

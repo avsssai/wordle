@@ -51,7 +51,6 @@ export const getWordOfTheDay = (index: number) => {
 
 export const getSolution = (gameDate: Date) => {
 	const index = getIndex(gameDate);
-	console.log(index);
 	const wordOfTheDay = getWordOfTheDay(index);
 	return {
 		solutionIndex: index,
