@@ -6,16 +6,26 @@ type IStatus = "correct" | "incorrect" | "misplaced";
 const variants: Variants = {
 	initial: {
 		rotateX: 0,
+		scale: 1,
 		backgroundColor: "rgba(0,0,0,0)",
 	},
-	final: ({ i, status }: { i: number; status: IStatus }) => ({
+	final: ({
+		i,
+		status,
+	}: {
+		i: number;
+		status: IStatus;
+		letter: string;
+		type: string;
+	}) => ({
 		rotateX: [0, 90, 0],
+
 		backgroundColor:
 			status === "correct"
 				? "var(--color-correct)"
 				: status === "misplaced"
 				? "var(--color-misplaced)"
-				: "var(--color-absent)",
+				: "var(--color-incorrect)",
 		transition: {
 			// duration: 0.1,
 			duration: 0.7,
@@ -37,13 +47,14 @@ export default function Cell({
 	className?: string;
 	i?: number;
 	status?: IStatus;
+	type?: string;
 }) {
 	return (
 		<motion.span
 			variants={variants}
 			initial='initial'
 			animate={completed ? "final" : false}
-			custom={{ i, status }}
+			custom={{ i, status, letter }}
 			style={{ backgroundColor: "rgba(0,0,0,0)" }}
 			className={cn(
 				"h-[52px] w-[52px] border border-gray-400 text-white flex items-center justify-center font-bold text-3xl capitalize",

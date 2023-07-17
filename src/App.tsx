@@ -25,7 +25,7 @@ function App() {
 		currentStreak: 0,
 		gamesPlayed: 0,
 		gamesWon: 0,
-		guesses: { 1: 0, 2: 0, 3: 0, 4: 1, 5: 0, 6: 0 },
+		guesses: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
 		hasPlayed: false,
 		isOnStreak: false,
 		maxStreak: 0,
