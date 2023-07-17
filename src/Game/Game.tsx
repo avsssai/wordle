@@ -9,6 +9,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
 import { calculateKeyResults } from "../utils/letterResults";
 import { IObjectStringKeyValue } from "../types/genericTypes";
+import { shareResults } from "../utils/shareResults";
 
 interface IObject {
 	[key: number]: string;
@@ -74,7 +75,7 @@ export default function Game({
 		React.useState<boolean>(false);
 	// const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
 	// console.log(wordOfTheDay, "WORD OF THE DAY");
-
+	console.log(shareResults(gameState, currentRow, answer, gameStatus));
 	React.useEffect(() => {
 		const timeStampInWindow = window.localStorage.getItem("timestamp");
 		if (!timeStampInWindow) {
