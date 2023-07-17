@@ -1,6 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
-import { XCircle } from "lucide-react";
+import { XCircle } from "react-feather";
 
 const dialogVariants: Variants = {
 	close: {

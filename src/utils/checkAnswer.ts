@@ -1,5 +1,5 @@
 type Status = "correct" | "misplaced" | "incorrect";
-interface Results {
+export interface Results {
 	letter: string;
 	status: Status;
 }

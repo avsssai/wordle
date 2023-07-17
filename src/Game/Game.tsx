@@ -7,6 +7,8 @@ import Keyboard from "../Keyboard/Keyboard";
 import { checkLegitWord, isValidWord, letterInAphabet } from "../utils/words";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
+import { calculateKeyResults } from "../utils/letterResults";
+import { IObjectStringKeyValue } from "../types/genericTypes";
 
 interface IObject {
 	[key: number]: string;
@@ -32,6 +34,7 @@ interface GameProps {
 	setTimeStamp: (value: number) => void;
 	setStats: (value: Stats) => void;
 	stats: Stats;
+	setCompleteDialogOpen: (val: boolean) => void;
 }
 
 export default function Game({
@@ -39,6 +42,7 @@ export default function Game({
 	setTimeStamp,
 	setStats,
 	stats,
+	setCompleteDialogOpen,
 }: GameProps) {
 	const [gameState, setGameState] = useLocalStorage<string[]>(
 		"game-state",
@@ -61,6 +65,9 @@ export default function Game({
 	const [currentWord, setCurrentWord] = useLocalStorage<string>(
 		"current-word",
 		initialCurrentWord
+	);
+	const [keyRes, setKeyRes] = React.useState<IObjectStringKeyValue>(() =>
+		calculateKeyResults(gameState, answer)
 	);
 
 	const [incorrectAnimation, setIncorrectAnimation] =
@@ -93,87 +100,153 @@ export default function Game({
 		timeStamp,
 	]);
 
+	const onEnter = React.useCallback(
+		(stats: Stats) => {
+			function percentageCalc(stats: Stats) {
+				const totalWins = Object.values(stats.guesses).reduce(
+					(acc, val) => {
+						acc += val;
+						return acc;
+					},
+					0
+				);
+				return Math.floor(
+					(totalWins / (totalWins + stats.failCount)) * 100
+				);
+			}
+			if (!checkLegitWord(currentWord)) {
+				return;
+			}
+
+			if (!isValidWord(currentWord)) {
+				setIncorrectAnimation(true);
+				return;
+			}
+			if (gameState.length >= 5 && gameStatus === "running") {
+				setTimeout(() => {
+					setGameStatus("failed");
+
+					// update the stats
+					const newStats = { ...stats };
+					newStats.currentStreak = 0;
+					newStats.gamesPlayed++;
+					newStats.failCount++;
+					newStats.hasPlayed = true;
+					newStats.isOnStreak = false;
+					newStats.winPercentage = percentageCalc(newStats);
+					setStats(newStats);
+					setKeyRes(calculateKeyResults(gameState, answer));
+					setToastMessage(answer);
+					setShowToast(true);
+				}, 3500);
+				setTimeout(() => {
+					setCompleteDialogOpen(true);
+				}, 4500);
+			}
+			setTimeStamp(unixTimeNow());
+			const newState = [...gameState];
+			newState[currentRow] = currentWord; // setting mutable state
+			setGameState(newState);
+			setCurrentWord("");
+			setCurrentRow((state) => state + 1);
+			setTimeout(() => {
+				setKeyRes(calculateKeyResults(newState, answer));
+			}, 3500);
+
+			if (currentWord === answer) {
+				setTimeout(() => {
+					setGameStatus("passed");
+
+					const newStats = { ...stats };
+					newStats.currentStreak++;
+					newStats.gamesPlayed++;
+					newStats.guesses[currentRow + 1]++;
+					newStats.hasPlayed = true;
+					newStats.isOnStreak = true;
+					newStats.gamesWon++;
+					newStats.maxStreak++;
+					newStats.winPercentage = percentageCalc(newStats);
+					setStats(newStats);
+
+					setShowToast(true);
+
+					setToastMessage(completedGameLauds[currentRow]);
+					setKeyRes(calculateKeyResults(gameState, answer));
+				}, 3500);
+				setTimeout(() => {
+					setCompleteDialogOpen(true);
+				}, 4500);
+			}
+		},
+		[
+			answer,
+			currentRow,
+			currentWord,
+			gameState,
+			gameStatus,
+			setCompleteDialogOpen,
+			setCurrentRow,
+			setCurrentWord,
+			setGameState,
+			setGameStatus,
+			setShowToast,
+			setStats,
+			setTimeStamp,
+			setKeyRes,
+		]
+	);
+
+	const onDelete = React.useCallback(
+		(currentWord: string) => {
+			if (currentWord.length > 0) {
+				setCurrentWord((state) => state.slice(0, state.length - 1));
+			}
+		},
+		[setCurrentWord]
+	);
+
+	const onKeyClick = React.useCallback(
+		(e: KeyboardEvent | React.MouseEvent) => {
+			console.log("something");
+
+			if (e instanceof KeyboardEvent) {
+				if (letterInAphabet(e.key)) {
+					setCurrentWord((state) => state + e.key.toUpperCase());
+				}
+			} else {
+				if (letterInAphabet((e.target as HTMLInputElement).value)) {
+					setCurrentWord(
+						(state) =>
+							state +
+							(e.target as HTMLInputElement).value.toUpperCase()
+					);
+				}
+			}
+		},
+		[setCurrentWord]
+	);
+
 	React.useEffect(() => {
-		function percentageCalc(stats: Stats) {
-			const totalWins = Object.values(stats.guesses).reduce(
-				(acc, val) => {
-					acc += val;
-					return acc;
-				},
-				0
-			);
-			return Math.floor(
-				(totalWins / (totalWins + stats.failCount)) * 100
-			);
-		}
 		const keyPressEvent = (e: KeyboardEvent) => {
 			if (gameStatus !== "running") {
 				return;
 			}
 
 			if (e.key === "Enter") {
-				if (!checkLegitWord(currentWord)) {
-					return;
-				}
-
-				if (!isValidWord(currentWord)) {
-					setIncorrectAnimation(true);
-					return;
-				}
-				if (gameState.length >= 5 && gameStatus === "running") {
-					setTimeout(() => {
-						setGameStatus("failed");
-
-						// update the stats
-						const newStats = { ...stats };
-						newStats.currentStreak = 0;
-						newStats.gamesPlayed++;
-						newStats.failCount++;
-						newStats.hasPlayed = true;
-						newStats.isOnStreak = false;
-						newStats.winPercentage = percentageCalc(newStats);
-						setStats(newStats);
-
-						setToastMessage(answer);
-						setShowToast(true);
-					}, 3500);
-				}
-				setTimeStamp(unixTimeNow());
-				const newState = [...gameState];
-				newState[currentRow] = currentWord; // setting mutable state
-				setGameState(newState);
-				setCurrentWord("");
-				setCurrentRow((state) => state + 1);
-				if (currentWord === answer) {
-					setTimeout(() => {
-						setGameStatus("passed");
-
-						const newStats = { ...stats };
-						newStats.currentStreak++;
-						newStats.gamesPlayed++;
-						newStats.guesses[currentRow + 1]++;
-						newStats.hasPlayed = true;
-						newStats.isOnStreak = true;
-						newStats.gamesWon++;
-						newStats.maxStreak++;
-						newStats.winPercentage = percentageCalc(newStats);
-						setStats(newStats);
-
-						setShowToast(true);
-						setToastMessage(completedGameLauds[currentRow]);
-					}, 3500);
-				}
+				onEnter(stats);
 			} else if (e.key === "Backspace" || e.key === "Delete") {
-				if (currentWord.length > 0) {
-					setCurrentWord((state) => state.slice(0, state.length - 1));
-				}
+				// if (currentWord.length > 0) {
+				// 	setCurrentWord((state) => state.slice(0, state.length - 1));
+				// }
+				onDelete(currentWord);
 			} else {
 				if (currentWord.length >= 5) {
 					return;
 				} else {
-					if (letterInAphabet(e.key)) {
-						setCurrentWord((state) => state + e.key.toUpperCase());
-					}
+					// if (letterInAphabet(e.key)) {
+					// 	setCurrentWord((state) => state + e.key.toUpperCase());
+					// }
+					onKeyClick(e);
 				}
 			}
 		};
@@ -181,20 +254,14 @@ export default function Game({
 		return () => removeEventListener("keyup", keyPressEvent);
 	}, [
 		currentWord,
-		gameState,
-		currentRow,
-		setGameState,
-		setCurrentWord,
-		setCurrentRow,
-		answer,
+		onDelete,
 		gameStatus,
-		setGameStatus,
-		setShowToast,
-		setTimeStamp,
-		setStats,
+		onEnter,
+		onKeyClick,
 		stats,
+		keyRes,
+		setKeyRes,
 	]);
-
 	return (
 		<div className='flex flex-col justify-between pt-10 h-full max-w-md m-auto relative'>
 			<div className='flex-1 flex items-center justify-center relative'>
@@ -210,7 +277,17 @@ export default function Game({
 				/>
 				D
 			</div>
-			<Keyboard />
+			<div className='md:flex-1'>
+				<Keyboard
+					onEnter={onEnter}
+					onDelete={onDelete}
+					onKeyClick={onKeyClick}
+					currentWord={currentWord}
+					stats={stats}
+					gameStatus={gameStatus}
+					keyRes={keyRes}
+				/>
+			</div>
 			{/* <Input handleAddGuess={handleAddGuess} gameStatus={gameStatus} /> */}
 		</div>
 	);

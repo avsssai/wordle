@@ -60,6 +60,7 @@ function App() {
 					setTimeStamp={setTimeStamp}
 					setStats={setStats}
 					stats={stats}
+					setCompleteDialogOpen={setCompleteDialogOpen}
 				/>
 			</div>
 		</AnswerProvider>

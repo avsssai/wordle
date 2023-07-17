@@ -1,4 +1,5 @@
-import { HelpCircle, BarChart2, Settings } from "lucide-react";
+// import { HelpCircle, BarChart2 } from "lucide-react";
+import { HelpCircle, BarChart2 } from "react-feather";
 export default function Header({
 	setTutorialDialogOpen,
 	setCompleteDialogOpen,
@@ -22,7 +23,7 @@ export default function Header({
 					onClick={() => setCompleteDialogOpen(true)}
 					className='cursor-pointer'
 				/>
-				<Settings strokeWidth={3} />
+				{/* <Settings strokeWidth={3} /> */}
 			</div>
 		</div>
 	);
