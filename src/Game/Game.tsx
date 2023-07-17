@@ -122,7 +122,16 @@ export default function Game({
 				setIncorrectAnimation(true);
 				return;
 			}
-			if (gameState.length >= 5 && gameStatus === "running") {
+			setTimeStamp(unixTimeNow());
+			const newState = [...gameState];
+			newState[currentRow] = currentWord; // setting mutable state
+			setGameState(newState);
+			setCurrentWord("");
+			setCurrentRow((state) => state + 1);
+			setTimeout(() => {
+				setKeyRes(calculateKeyResults(newState, answer));
+			}, 3500);
+			if (newState.length >= 6 && gameStatus === "running") {
 				setTimeout(() => {
 					setGameStatus("failed");
 
@@ -135,7 +144,7 @@ export default function Game({
 					newStats.isOnStreak = false;
 					newStats.winPercentage = percentageCalc(newStats);
 					setStats(newStats);
-					setKeyRes(calculateKeyResults(gameState, answer));
+					setKeyRes(calculateKeyResults(newState, answer));
 					setToastMessage(answer);
 					setShowToast(true);
 				}, 3500);
@@ -143,15 +152,6 @@ export default function Game({
 					setCompleteDialogOpen(true);
 				}, 4500);
 			}
-			setTimeStamp(unixTimeNow());
-			const newState = [...gameState];
-			newState[currentRow] = currentWord; // setting mutable state
-			setGameState(newState);
-			setCurrentWord("");
-			setCurrentRow((state) => state + 1);
-			setTimeout(() => {
-				setKeyRes(calculateKeyResults(newState, answer));
-			}, 3500);
 
 			if (currentWord === answer) {
 				setTimeout(() => {
@@ -171,7 +171,7 @@ export default function Game({
 					setShowToast(true);
 
 					setToastMessage(completedGameLauds[currentRow]);
-					setKeyRes(calculateKeyResults(gameState, answer));
+					setKeyRes(calculateKeyResults(newState, answer));
 				}, 3500);
 				setTimeout(() => {
 					setCompleteDialogOpen(true);
