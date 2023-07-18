@@ -28,7 +28,7 @@ const initialGameStatus: GameStatus = "running";
 const initialCurrentRow = 0;
 const initialCurrentWord = "";
 const initialShowToast = false;
-
+const initialKeyRes = {};
 interface GameProps {
 	timeStamp: number;
 	setTimeStamp: (value: number) => void;
@@ -67,12 +67,19 @@ export default function Game({
 		"current-word",
 		initialCurrentWord
 	);
-	const [keyRes, setKeyRes] = React.useState<IObjectStringKeyValue>(() =>
-		calculateKeyResults(gameState, answer)
-	);
+	const [keyRes, setKeyRes] =
+		React.useState<IObjectStringKeyValue>(initialKeyRes);
 
 	const [incorrectAnimation, setIncorrectAnimation] =
 		React.useState<boolean>(false);
+
+	console.log(calculateKeyResults(gameState, answer));
+	React.useEffect(() => {
+		setTimeout(
+			() => setKeyRes(calculateKeyResults(gameState, answer)),
+			3500
+		);
+	}, [answer, gameState]);
 	// const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
 	// console.log(wordOfTheDay, "WORD OF THE DAY");
 	React.useEffect(() => {
