@@ -32,7 +32,7 @@ export default function MyDialog({
 			<Dialog
 				open={open}
 				onClose={() => setOpen(false)}
-				className='relative z-50'>
+				className='relative z-50 isolate'>
 				<div className='fixed inset-0 bg-black/50' aria-hidden='true' />
 				<motion.div
 					variants={dialogVariants}
@@ -40,7 +40,7 @@ export default function MyDialog({
 					animate='open'
 					className='fixed inset-0 flex items-center justify-center p-4'>
 					<Dialog.Panel className='w-full relative max-w-sm rounded bg-stone-800 text-white py-6 px-4 '>
-						<div className='absolute top-2 right-2 cursor-pointer'>
+						<div className='absolute top-2 right-2 cursor-pointer z-150'>
 							<XCircle
 								color='white'
 								onClick={() => setOpen(false)}

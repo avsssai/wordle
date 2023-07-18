@@ -10,3 +10,7 @@ export function range(start: number, stop?: number, step = 1) {
 	}
 	return res;
 }
+
+export function random(range: number) {
+	return Math.floor(Math.random() * range);
+}

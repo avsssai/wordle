@@ -199,7 +199,7 @@ export const WORDS = [
 	"boost",
 	"truss",
 	"siege",
-	"tiger",
+	"sruti",
 	"banal",
 	"slump",
 	"crank",

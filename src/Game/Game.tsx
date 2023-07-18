@@ -282,7 +282,7 @@ export default function Game({
 				/>
 				D
 			</div>
-			<div className='md:flex-1'>
+			<div className='lg:flex-1 sm:pb-20'>
 				<Keyboard
 					onEnter={onEnter}
 					onDelete={onDelete}
