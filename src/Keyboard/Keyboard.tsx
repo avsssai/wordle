@@ -1,6 +1,7 @@
 import { GameStatus, Stats } from "../types/state";
 import { IObjectStringKeyValue } from "../types/genericTypes";
 import { cn } from "../utils/cn";
+import { Delete } from "react-feather";
 // import { calculateKeyResults } from "../utils/letterResults";
 
 type KeyboardLayout = {
@@ -131,7 +132,7 @@ function Row({
 				<button
 					key={key}
 					className={cn(
-						"h-[48px] flex justify-center items-center flex-1 bg-muted text-black max-w-[32px] rounded-md ",
+						"h-[48px] flex justify-center items-center flex-1 bg-muted  max-w-[32px] rounded-md font-bold text-white",
 						results[letter] === "correct"
 							? "bg-[var(--color-correct)] text-white"
 							: results[letter] === "misplaced"
@@ -161,7 +162,7 @@ function LastKeyboardRow({
 	return (
 		<div className='text-white flex gap-[5px] justify-center'>
 			<button
-				className='h-[48px] flex justify-center items-center flex-1 bg-muted text-black rounded-md'
+				className='h-[48px] flex justify-center items-center flex-1 bg-muted text-white font-bold rounded-md'
 				onClick={handleButtonClick}
 				value='enter'>
 				Enter
@@ -171,7 +172,7 @@ function LastKeyboardRow({
 					key={key}
 					value={letter}
 					className={cn(
-						"h-[48px] flex justify-center items-center flex-1 bg-muted text-black max-w-[32px] rounded-md ",
+						"h-[48px] flex justify-center items-center flex-1 bg-muted text-white font-bold max-w-[32px] rounded-md ",
 						results[letter] === "correct"
 							? "bg-[var(--color-correct)] text-white"
 							: results[letter] === "misplaced"
@@ -185,10 +186,10 @@ function LastKeyboardRow({
 				</button>
 			))}
 			<button
-				className='h-[48px] flex justify-center items-center flex-1 bg-muted text-black rounded-md'
+				className='h-[48px] flex justify-center items-center flex-1 bg-muted text-white font-bold rounded-md'
 				value='clear'
 				onClick={handleButtonClick}>
-				Clear
+				<Delete />
 			</button>
 		</div>
 	);
