@@ -5,6 +5,13 @@ import {
 	isToday,
 	subMinutes,
 } from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
+
+export function isTodayInTimeZone(utc: number) {
+	const date = fromUnixTime(utc);
+	const zonedDate = utcToZonedTime(date, "Asia/Kolkata");
+	return isToday(zonedDate);
+}
 
 export function unixTimeNow() {
 	// return Date.now();
@@ -24,10 +31,14 @@ export function isTodayTimestamp(unixTimeStamp: number) {
 	return isToday(formattedDate);
 }
 
-function formatTimezone(date: Date): Date {
+export function formatTimezone(date: Date): Date {
 	const offset = date.getTimezoneOffset();
 
 	return Math.sign(offset) !== -1
 		? addMinutes(date, offset)
 		: subMinutes(date, Math.abs(offset));
+}
+
+export function offsetByTimeZone() {
+	return unixTimeNow() + 5 * 3600 + 30 * 60;
 }

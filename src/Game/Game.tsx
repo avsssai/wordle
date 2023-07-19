@@ -6,7 +6,11 @@ import Toast from "../Toast/Toast";
 import Keyboard from "../Keyboard/Keyboard";
 import { checkLegitWord, isValidWord, letterInAphabet } from "../utils/words";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { isTodayTimestamp, unixTimeNow } from "../utils/dateUtils";
+import {
+	isTodayInTimeZone,
+	isTodayTimestamp,
+	unixTimeNow,
+} from "../utils/dateUtils";
 import { calculateKeyResults } from "../utils/letterResults";
 import { IObjectStringKeyValue } from "../types/genericTypes";
 
@@ -73,7 +77,7 @@ export default function Game({
 	const [incorrectAnimation, setIncorrectAnimation] =
 		React.useState<boolean>(false);
 
-	console.log(calculateKeyResults(gameState, answer));
+	console.log(gameState, answer);
 	React.useEffect(() => {
 		setTimeout(
 			() => setKeyRes(calculateKeyResults(gameState, answer)),
@@ -89,7 +93,8 @@ export default function Game({
 		} else {
 			// 1. if the time stamp is of yesterday, reset the local state
 			// const isPreviousDayTimestamp = isPreviousDay(timeStamp);
-			if (!isTodayTimestamp(timeStamp)) {
+			if (!isTodayInTimeZone(timeStamp)) {
+				console.log(isTodayTimestamp(timeStamp), timeStamp);
 				setGameState(initialGameState);
 				setGameStatus(initialGameStatus);
 				setCurrentRow(initialCurrentRow);
