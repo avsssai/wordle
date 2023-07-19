@@ -186,10 +186,10 @@ function LastKeyboardRow({
 				</button>
 			))}
 			<button
-				className='h-[48px] flex justify-center items-center flex-1 bg-muted text-white font-bold rounded-md'
+				className='h-[48px] flex justify-center items-center flex-1 bg-muted text-white font-bold rounded-md z-10'
 				value='clear'
 				onClick={handleButtonClick}>
-				<Delete />
+				<Delete className='pointer-events-none' />
 			</button>
 		</div>
 	);
